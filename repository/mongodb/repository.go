@@ -75,16 +75,6 @@ func (r *mongoRepository) Post(entry *inventory.Entry) error {
 	defer cancel()
 
 	collection := r.client.Database(r.database).Collection("inventory")
-	// _, err := collection.InsertOne(ctx, bson.M{
-	// 	"id":          entry.ID,
-	// 	"name":        entry.Name,
-	// 	"category":    entry.Category,
-	// 	"tags":        entry.Tags,
-	// 	"image_url":   entry.ImageURL,
-	// 	"created_at":  entry.CreatedAt,
-	// 	"modified_at": entry.ModifiedAt,
-	// })
-
 	_, err := collection.InsertOne(ctx, bson.M{
 		"id":              entry.ID,
 		"publisher":       entry.Publisher,

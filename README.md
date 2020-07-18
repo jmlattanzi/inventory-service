@@ -1,2 +1,3 @@
 # Inventory Service
-Small service part of the REX project.
+
+Service for handling inventory
