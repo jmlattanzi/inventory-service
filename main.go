@@ -19,9 +19,12 @@ import (
 )
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal(err)
+	if len(os.Args) > 1 && os.Args[1] == "development" {
+		fmt.Println("loading development env")
+		err := godotenv.Load()
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	repo := chooseRepo()
