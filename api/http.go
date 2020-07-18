@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -17,6 +18,7 @@ type InventoryHandler interface {
 	Update(http.ResponseWriter, *http.Request)
 	Delete(http.ResponseWriter, *http.Request)
 	GetAll(http.ResponseWriter, *http.Request)
+	GetCategory(http.ResponseWriter, *http.Request)
 }
 
 type handler struct {
@@ -101,6 +103,7 @@ func (h *handler) Post(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *handler) Update(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "id")
 	contentType := r.Header.Get("Content-Type")
 	requestBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -114,7 +117,7 @@ func (h *handler) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.inventoryService.Update(entry)
+	err = h.inventoryService.Update(entry, id)
 	if err != nil {
 		if errors.Cause(err) == inventory.ErrEntryInvalid {
 			http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
@@ -151,6 +154,25 @@ func (h *handler) Delete(w http.ResponseWriter, r *http.Request) {
 
 func (h *handler) GetAll(w http.ResponseWriter, r *http.Request) {
 	results, err := h.inventoryService.GetAll()
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	res, err := h.serializer("application/json").EncodeMultiple(results)
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	setupResponse(w, "application/json", res, http.StatusOK)
+}
+
+func (h *handler) GetCategory(w http.ResponseWriter, r *http.Request) {
+	// category := r.URL.Query().Get("category")
+	category := chi.URLParam(r, "category")
+	fmt.Printf("category: %s\n", category)
+	results, err := h.inventoryService.GetCategory(category)
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return

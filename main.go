@@ -35,11 +35,12 @@ func main() {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
-	r.Get("/entry/{id}", handler.Get)
+	r.Get("/entry/category/{category}", handler.GetCategory)
+	r.Put("/entry/{id}", handler.Update)
 	r.Post("/entry", handler.Post)
-	r.Put("/entry", handler.Update)
+	r.Get("/entry/{id}", handler.Get)
 	r.Delete("/entry/{id}", handler.Delete)
-	r.Get("/entries/", handler.GetAll)
+	r.Get("/entry/all", handler.GetAll)
 
 	errs := make(chan error, 2)
 	go func() {

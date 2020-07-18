@@ -41,9 +41,9 @@ func (i *inventoryService) Post(entry *Entry) error {
 	return i.inventoryRepo.Post(entry)
 }
 
-func (i *inventoryService) Update(entry *Entry) error {
+func (i *inventoryService) Update(entry *Entry, id string) error {
 	entry.ModifiedAt = time.Now().UTC().Unix()
-	return i.inventoryRepo.Update(entry)
+	return i.inventoryRepo.Update(entry, id)
 }
 
 func (i *inventoryService) Delete(id string) error {
@@ -52,4 +52,8 @@ func (i *inventoryService) Delete(id string) error {
 
 func (i *inventoryService) GetAll() ([]*Entry, error) {
 	return i.inventoryRepo.GetAll()
+}
+
+func (i *inventoryService) GetCategory(category string) ([]*Entry, error) {
+	return i.inventoryRepo.GetCategory(category)
 }
