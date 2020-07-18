@@ -16,6 +16,7 @@ type InventoryHandler interface {
 	Post(http.ResponseWriter, *http.Request)
 	Update(http.ResponseWriter, *http.Request)
 	Delete(http.ResponseWriter, *http.Request)
+	GetAll(http.ResponseWriter, *http.Request)
 }
 
 type handler struct {
@@ -146,4 +147,20 @@ func (h *handler) Delete(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
+}
+
+func (h *handler) GetAll(w http.ResponseWriter, r *http.Request) {
+	results, err := h.inventoryService.GetAll()
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	res, err := h.serializer("application/json").EncodeMultiple(results)
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	setupResponse(w, "application/json", res, http.StatusOK)
 }

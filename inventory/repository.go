@@ -5,4 +5,5 @@ type InventoryRepository interface {
 	Post(entry *Entry) error
 	Update(entry *Entry) error
 	Delete(id string) error
+	GetAll() ([]*Entry, error)
 }

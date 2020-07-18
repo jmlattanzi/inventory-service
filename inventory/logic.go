@@ -49,3 +49,7 @@ func (i *inventoryService) Update(entry *Entry) error {
 func (i *inventoryService) Delete(id string) error {
 	return i.inventoryRepo.Delete(id)
 }
+
+func (i *inventoryService) GetAll() ([]*Entry, error) {
+	return i.inventoryRepo.GetAll()
+}

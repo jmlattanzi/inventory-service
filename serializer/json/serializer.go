@@ -24,3 +24,11 @@ func (e *Entry) Encode(entry *inventory.Entry) ([]byte, error) {
 	}
 	return raw, nil
 }
+
+func (e *Entry) EncodeMultiple(entries []*inventory.Entry) ([]byte, error) {
+	raw, err := json.Marshal(entries)
+	if err != nil {
+		return nil, errors.Wrap(err, "serializer.Entry.EncodeMultiple")
+	}
+	return raw, nil
+}

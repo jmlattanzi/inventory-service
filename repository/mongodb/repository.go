@@ -126,3 +126,20 @@ func (r *mongoRepository) Delete(id string) error {
 
 	return nil
 }
+
+func (r *mongoRepository) GetAll() ([]*inventory.Entry, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), r.timeout)
+	defer cancel()
+
+	collection := r.client.Database(r.database).Collection("inventory")
+	cursor, err := collection.Find(ctx, bson.M{})
+	if err != nil {
+		return nil, errors.Wrap(err, "repository.Entry.GetAll")
+	}
+
+	var results []*inventory.Entry
+	if err = cursor.All(ctx, &results); err != nil {
+		return nil, errors.Wrap(err, "repository.Entry.GetAll")
+	}
+	return results, nil
+}
